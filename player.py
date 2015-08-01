@@ -1,16 +1,18 @@
 import random
 
 class Player:
-    def __init__(self, game, name):
-        self.cards = []
-        self.game = game
-        self.name = name
+  def __init__(self, game, name):
+    self.cards = []
+    self.game = game
+    self.table = game.table
+    self.name = name
 
-    def play(self, card):
-        self.game.play(self, card)
+  def __str__(self):
+    return '%s %s' % (self.__class__.__name__, self.name)
 
-    def action(self):
-        # default - random
-        self.play(random.choice(self.cards))
+  def update_on_action(self, acting_player, action, args):
+    pass
 
+  def best_play(self):
+    return ('PLAY', random.choice(self.cards))
 
