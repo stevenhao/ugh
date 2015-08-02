@@ -105,6 +105,9 @@ class Table:
     self.hints = 8
     self.lives = 3
 
+  def is_complete(self, color):
+    return len(self.stacks[color]) == 5
+    
   def can_play(self, card):
     return len(self.stacks[card.color]) == card.number
 
@@ -112,6 +115,8 @@ class Table:
     if self.can_play(card):
       self.played_cards.append(card)
       self.stacks[card.color].append(card)
+      if self.is_complete(card.color):
+        self.hints += 1
     else:
       self.lives -= 1
 

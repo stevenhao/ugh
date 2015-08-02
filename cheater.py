@@ -19,19 +19,16 @@ class Cheater(StrategyPlayer):
     other_players = self.game.get_other_players(self)
     hint = ('HINT', (other_players[0], 0, 0))
     discard = ('DISCARD', discard_candidate)
+
     if self.table.hints >= 8:
       return hint
-
-    if discard_score >= 3:
+    elif discard_score >= 3:
       return discard
-
-    if self.table.hints >= 4:
+    elif self.table.hints >= 4:
       return hint
-
-    if discard_score >= 2:
+    elif discard_score >= 2:
       return discard
-
-    if self.table.hints >= 1:
+    elif self.table.hints >= 1:
       return hint
-
-    return discard
+    else:
+      return discard
