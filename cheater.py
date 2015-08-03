@@ -1,7 +1,29 @@
 from player import Player
-from strategyPlayer import StrategyPlayer
+from configs import frequencies
 
-class Cheater(StrategyPlayer):
+class Cheater(Player):
+  def can_play(self, card):
+    if self.table.can_play(card):
+      return 6 - card.number
+    else:
+      return 0
+
+  def can_discard(self, card):
+    if card in self.table.played_cards:
+      return 3
+    discarded = len(filter(card.__eq__, self.table.discarded_cards))
+    total = frequencies[card.number]
+    left = total - discarded - 1
+    if left:
+      if card.number > 2:
+        return 2
+      elif card.number == 1:
+        if left == 2:
+          return 2
+      return 1
+    else:
+      return 0
+      
   def best_play(self):
     def playable(card):
       card_data = self.game.deck[card]

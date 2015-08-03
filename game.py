@@ -1,5 +1,7 @@
 from player import Player
 from cheater import Cheater
+from card import Card
+from smartPlayer import SmartPlayer
 from configs import colors, numbers, frequencies
 from random import shuffle
 
@@ -19,11 +21,18 @@ class Game:
 
   def tell_color(self, player, card):
     color = self.deck[card].color
+    player.learn_card_data(card, 'color', color)
     #player.knows(card.color == color)
 
   def tell_number(self, player, card):
     number = self.deck[card].number
-    #player.knows(card.number == number)
+    player.learn_card_data(card, 'number', number)
+
+  def tell_not_color(self, player, card, color):
+    pass
+  
+  def tell_not_number(self, player, card, number):
+    pass
 
   def deal(self, player):
     if self.deck_position >= len(self.deck):
@@ -55,6 +64,8 @@ class Game:
   def action(self, acting_player, action, args):
     print 'ACTION: %s %s: %s' % (acting_player, action, args)
     self.action_log.append((acting_player, action, args))
+    for player in players:
+      player.update_on_action(acting_player, action, args)
     if action == 'PLAY':
       card = args
       self.play(acting_player, card)
@@ -64,19 +75,20 @@ class Game:
     elif action == 'DISCARD':
       card = args
       self.discard(acting_player, card)
-    for player in players:
-      player.update_on_action(acting_player, action, args)
-
 
   def start(self, players):
     self.endgame = False
-    self.init_deck()
+    self.init_deck()    
     print "Starting with deck %s" % [str(x) for x in self.deck]
     self.action_log = []
     self.players = players
+    for position, player in enumerate(self.players):
+      player.start_game(position)
+
     for player in self.players:
       for i in range(4):
         self.deal(player)
+
     self.player_turn = 0
 
   def step(self):
@@ -131,23 +143,12 @@ class Table:
        for color in range(5))
     return '\n'.join((header, body))
 
-class Card:
-  def __init__(self, number, color):
-    self.number = number
-    self.color = color
-
-  def __eq__(self, other):
-    return (self.number, self.color) == (other.number, other.color)
-
-  def __str__(self):
-    return colors[self.color] + numbers[self.number]
-
 
 if __name__ == '__main__':
   num_players = 5
   game = Game()
   # players = [Player(game, str(i + 1)) for i in range(num_players)]
-  players = [Cheater(game, str(i + 1)) for i in range(num_players)]
+  players = [SmartPlayer(game, str(i + 1)) for i in range(num_players)]
   game.start(players)
   cnt = 0
   while game.step():
