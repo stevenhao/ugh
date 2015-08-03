@@ -101,6 +101,8 @@ class Game:
     acting_player = self.players[self.player_turn]
     self.action(acting_player, *acting_player.best_play())
     self.player_turn = (self.player_turn + 1) % 5
+    for player in self.players:
+      print "%s: %s" % (player.name, [str(self.deck[card]) for card in player.cards])
     print self.table
     if self.deck_position == len(self.deck):
       if not self.endgame:
