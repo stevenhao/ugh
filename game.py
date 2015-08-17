@@ -103,7 +103,9 @@ class Game:
     self.player_turn = (self.player_turn + 1) % 5
     for player in self.players:
       print "%s: %s" % (player.name, [str(self.deck[card]) for card in player.cards])
+#      print "%s: %s   (%s)" % (player.name, [str(self.deck[card]) for card in player.cards], player.memory)
     print self.table
+    print 'turns left: %d' % (len(self.deck) - self.deck_position)
     if self.deck_position == len(self.deck):
       if not self.endgame:
         self.endgame = True
@@ -119,6 +121,8 @@ class Table:
     self.hints = 8
     self.lives = 3
 
+  def get_cards_left(self):
+    return 30 - len(self.played_cards + self.discarded_cards)
   def is_complete(self, color):
     return len(self.stacks[color]) == 5
     
@@ -132,6 +136,7 @@ class Table:
       if self.is_complete(card.color):
         self.hints += 1
     else:
+      self.discarded_cards.append(card)
       self.lives -= 1
 
   def discard(self, card):
